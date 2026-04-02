@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #F8D7DA;
+  --color-secondary: #FAE1C3;
+  --color-accent: #C9A9A6;
+  --color-background: #FFF9F4;
+  --color-text: #3E2C2C;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --radius-card: 16px;
+  --radius-button: 999px;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-background);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .card {
+    @apply bg-white rounded-card shadow-warm overflow-hidden;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-white font-body font-medium px-6 py-3 rounded-button transition-all duration-200 hover:opacity-90 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-text-dark font-body font-medium px-6 py-3 rounded-button transition-all duration-200 hover:opacity-90 active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-white font-body font-medium px-6 py-3 rounded-button border-2 border-white transition-all duration-200 hover:bg-white hover:text-text-dark active:scale-95;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
