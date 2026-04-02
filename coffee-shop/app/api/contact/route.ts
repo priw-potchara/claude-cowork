@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     const { error } = await resend.emails.send({
       from: 'Bloom Coffee Contact Form <noreply@bloomcoffee.com>',
       to: [contactEmail],
-      replyTo: email.trim(),
+      reply_to: email.trim(),
       subject: `New message from ${name.trim()} — Bloom Coffee`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
