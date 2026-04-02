@@ -1,7 +1,20 @@
-import { client } from './client'
+import { client, isSanityConfigured } from './client'
+
+async function sanityFetch<T>(
+  query: string,
+  params: Record<string, unknown> = {},
+  options: { next?: { revalidate?: number; cache?: string } } = {}
+): Promise<T | null> {
+  if (!isSanityConfigured || !client) return null
+  try {
+    return await client.fetch<T>(query, params, options as Parameters<typeof client.fetch>[2])
+  } catch {
+    return null
+  }
+}
 
 export async function getHero() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "hero"][0]{
       tagline,
       subtext,
@@ -15,7 +28,7 @@ export async function getHero() {
 }
 
 export async function getAbout() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "about"][0]{
       storyTitle,
       storyText,
@@ -32,7 +45,7 @@ export async function getMenuItems(category?: string) {
     ? `*[_type == "menuItem" && category == $category && available != false]`
     : `*[_type == "menuItem" && available != false]`
 
-  return client.fetch(
+  return sanityFetch(
     `${filter} | order(name asc) {
       _id,
       name,
@@ -51,7 +64,7 @@ export async function getMenuItems(category?: string) {
 }
 
 export async function getAllMenuItems() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "menuItem" && available != false] | order(category asc, name asc) {
       _id,
       name,
@@ -70,7 +83,7 @@ export async function getAllMenuItems() {
 }
 
 export async function getGallery() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "gallery"][0]{
       photos[] | order(order asc) {
         image,
@@ -85,7 +98,7 @@ export async function getGallery() {
 
 export async function getActivePromotions() {
   const now = new Date().toISOString()
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "promotion" && active == true && (expiresAt == null || expiresAt > $now)] | order(_createdAt desc) {
       _id,
       title,
@@ -94,12 +107,12 @@ export async function getActivePromotions() {
       expiresAt
     }`,
     { now },
-    { next: { cache: 'no-store' } }
+    { next: { revalidate: 0 } }
   )
 }
 
 export async function getTestimonials() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "testimonial"] | order(order asc) {
       _id,
       quote,
@@ -113,7 +126,7 @@ export async function getTestimonials() {
 }
 
 export async function getHours() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "hours"][0]{
       days[] {
         day,
@@ -128,7 +141,7 @@ export async function getHours() {
 }
 
 export async function getSettings() {
-  return client.fetch(
+  return sanityFetch(
     `*[_type == "settings"][0]{
       shopName,
       address,
